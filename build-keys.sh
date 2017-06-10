@@ -29,4 +29,5 @@ EOF
 ./easyrsa build-server-full server nopass
 ./easyrsa build-client-full client nopass
 ./easyrsa gen-dh
+./easyrsa gen-crl
 openvpn --genkey --secret pki/ta.key
