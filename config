@@ -1,0 +1,6 @@
+USBFLASH=usb_flash
+EASYRSA3_DIR=easy-rsa/easyrsa3
+PKI_DIR=pki
+
+BATCH=CN
+KEY_SIZE=2048  # 4096
