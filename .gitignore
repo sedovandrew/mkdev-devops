@@ -3,3 +3,5 @@ CentOS-7-x86_64-Minimal-1611.iso
 .vagrant
 usb_flash
 *.swp
+floppy.img
+kernel-3.10.0-514.21.1.el7.src.rpm
