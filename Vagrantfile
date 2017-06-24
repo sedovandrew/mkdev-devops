@@ -22,11 +22,6 @@ machines = [
   }
 ]
 
-if not Dir.exist?(usb_flash)
-  puts "Pki is not created. Run ./build-keys.sh first."
-  exit
-end
-
 Vagrant.configure("2") do |config|
   config.vm.box = "sedovandrew/mkdev"
 
@@ -37,6 +32,14 @@ Vagrant.configure("2") do |config|
       if machine["ip"]
         m.vm.network "private_network", ip: machine["ip"]
       end
+
+      if ["up", "provision"].include? ARGV[0]
+        if not Dir.exist?(usb_flash)
+          puts "Pki is not created. Run ./build-keys.sh first."
+          exit
+        end
+      end
+
       if machine["scripts"]
         machine["scripts"].each do |script|
           m.vm.provision "shell", path: script
