@@ -59,4 +59,44 @@ Vagrant.configure("2") do |config|
     kernel.vm.provision "shell", path: "kernel/build-kernel.sh"
   end
 
+  config.vm.define "nexus" do |nexus|
+    nexus.vm.hostname = "nexus.mkdev"
+    nexus.vm.provider "libvirt"
+    nexus.vm.synced_folder ".", "/vagrant", disabled: true
+    nexus.vm.network "private_network", ip: "192.168.90.104"
+
+    # Puppet
+    nexus.vm.provision "shell", path: "puppet/puppet-install.sh"
+
+    # Puppet modules
+    nexus.vm.provision "shell", path: "puppet/puppet-nexus-install.sh"
+
+    nexus.vm.provision "puppet" do |puppet|
+      puppet.environment_path = "puppet/environments"
+      puppet.environment = "nexus"
+    end
+  end
+
+  config.vm.define "workspace" do |workspace|
+    workspace.vm.hostname = "workspace.mkdev"
+    workspace.vm.provider "libvirt"
+    workspace.vm.synced_folder ".", "/vagrant", disable: true
+    workspace.vm.network "private_network", ip: "192.168.90.105"
+
+    # Puppet
+    workspace.vm.provision "shell", path: "puppet/puppet-install.sh"
+
+    # Puppet modules
+    workspace.vm.provision "shell", path: "puppet/workspace-modules.sh"
+
+    # Puppet module for deploy fastblank
+    workspace.vm.provision "file", source: "puppet/fastblank", destination: "/tmp/fastblank"
+    workspace.vm.provision "shell", path: "puppet/fastblank.sh", privileged: false
+
+    # Maven
+    workspace.vm.provision "puppet" do |puppet|
+      puppet.environment_path = "puppet/environments"
+      puppet.environment = "maven"
+    end
+  end
 end

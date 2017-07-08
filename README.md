@@ -16,3 +16,12 @@ TODO
     ./attach-floppy.sh
     vagrant reload kernel
     vagrant ssh kernel
+
+# Task # 5
+
+    vagrant up nexus workspace
+    vagrant ssh workspace
+
+In workspace.mkdev:
+
+    puppet apply -e "include fastblank"
