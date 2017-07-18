@@ -1,0 +1,38 @@
+---
+- name: Install pip
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python2-pip
+    - nginx
+
+- name: Install dnspython
+  become: true
+  pip:
+    name: dnspython
+    state: present
+
+- name: Add or modify domain name to DNS
+  nsupdate:
+    key_name: "{{ host_name }}"
+    key_secret: "{{ dnsclient_public_key }}"
+    server: "{{ groups['dnsmaster']|first }}"
+    zone: "{{ dns_zone }}"
+    record: "{{ host_name }}"
+    value: "{{ inventory_hostname }}"
+
+- name: Rule for firewall
+  become: true
+  firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled
+
+- name: Make sure a service is running
+  become: true
+  systemd:
+    name: nginx
+    state: started

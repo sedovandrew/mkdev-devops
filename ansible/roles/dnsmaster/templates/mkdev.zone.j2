@@ -1,0 +1,12 @@
+$TTL 86400
+@	IN	SOA	{{ dns_server }}.{{ dns_zone }}.	root.{{ dns_zone }}.	(
+		2017071202
+		3600
+		1800
+		604800
+		86400
+)
+		IN	NS	{{ dns_server }}.{{ dns_zone }}.
+dnsmaster	IN	A	{{ inventory_hostname }}
+workspace	IN	A	192.168.90.105
+nexus		IN	A	192.168.90.104

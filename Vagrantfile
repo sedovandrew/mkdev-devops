@@ -99,4 +99,30 @@ Vagrant.configure("2") do |config|
       puppet.environment = "maven"
     end
   end
+
+  config.vm.define "dnsmaster" do |dnsmaster|
+    dnsmaster.vm.hostname = "dnsmaster.mkdev"
+    dnsmaster.vm.provider "libvirt"
+    dnsmaster.vm.network "private_network", ip: "192.168.90.53"
+
+    dnsmaster.vm.provision "shell", path: "provision/ansible-install.sh"
+
+    #dnsmaster.vm.provision "ansible" do |ansible|
+    #  ansible.inventory_path = "ansible/inventory"
+    #  ansible.playbook = "ansible/dnsmaster.yml"
+    #end
+  end
+
+  config.vm.define "dnsclient" do |dnsclient|
+    dnsclient.vm.hostname = "dnsclient.mkdev"
+    dnsclient.vm.provider "libvirt"
+    dnsclient.vm.network "private_network", ip: "192.168.90.54"
+
+    dnsclient.vm.provision "shell", path: "provision/ansible-install.sh"
+
+    #dnsclient.vm.provision "ansible" do |ansible|
+    #  ansible.inventory_path = "ansible/inventory"
+    #  ansible.playbook = "ansible/dnsclient.yml"
+    #end
+  end
 end

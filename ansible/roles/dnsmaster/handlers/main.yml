@@ -1,0 +1,6 @@
+---
+- name: restart dns
+  become: true
+  systemd:
+    name: named
+    state: restarted

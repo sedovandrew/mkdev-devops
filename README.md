@@ -25,3 +25,13 @@ TODO
 In workspace.mkdev:
 
     puppet apply -e "include fastblank"
+
+# Task # 6
+
+    vagrant up dnsmaster dnsclient
+    ansible-playbook ansible/all.yml -i ansible/inventory --ask-become-pass --ask-vault-pass
+
+Password for encryped data is **task-six**.
+
+    vagrant up server
+    vagrant up client
