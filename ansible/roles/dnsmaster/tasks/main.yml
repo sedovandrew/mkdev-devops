@@ -18,12 +18,17 @@
 - name: Configure zone mkdev
   become: true
   template:
-    src: mkdev.zone.j2
-    dest: /var/named/dynamic/mkdev.zone
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: named
     group: named
     mode: 0640
   notify: restart dns
+  with_items:
+    - src: mkdev.zone.j2
+      dest: /var/named/dynamic/mkdev.zone
+    - src: 90.168.192.in-addr.arpa.j2
+      dest: /var/named/dynamic/90.168.192.in-addr.arpa
 
 - name: Configure keys
   become: true

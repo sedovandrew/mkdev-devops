@@ -1,5 +1,11 @@
 ---
-- name: Install pip
+- name: Install epel
+  become: true
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install pip and nginx
   become: true
   yum:
     name: "{{ item }}"
