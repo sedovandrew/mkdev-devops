@@ -1,0 +1,14 @@
+$TTL 86400
+@	IN	SOA	{{ dns_server }}.{{ dns_zone }}.	root.{{ dns_zone }}.	(
+		2017071202
+		3600
+		1800
+		604800
+		86400
+)
+		IN	NS	{{ dns_server }}.{{ dns_zone }}.
+{{ inventory_hostname.split(".") | last }}	IN	PTR	{{ dns_server }}.{{ dns_zone }}.
+
+{% for host in host_list %}
+{{ host.host }}	IN	PTR	{{ host.name }}.{{ dns_zone }}.
+{% endfor %}

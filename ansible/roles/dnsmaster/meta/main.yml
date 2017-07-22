@@ -1,0 +1,8 @@
+galaxy_info:
+  author: Sedov Andrew
+  description: DNS server
+  license: BSD
+  min_ansible_version: 1.2
+  galaxy_tags: []
+
+dependencies: []

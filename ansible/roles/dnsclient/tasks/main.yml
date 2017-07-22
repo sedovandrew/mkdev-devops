@@ -1,0 +1,50 @@
+---
+- name: Install epel
+  become: true
+  yum:
+    name: epel-release
+    state: present
+
+- name: Install pip and nginx
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python2-pip
+    - nginx
+
+- name: Install dnspython
+  become: true
+  pip:
+    name: dnspython
+    state: present
+
+- name: Add or modify domain name to DNS
+  nsupdate:
+    key_name: "{{ host_name }}"
+    key_secret: "{{ dnsclient_public_key }}"
+    server: "{{ groups['dnsmaster']|first }}"
+    zone: "{{ item.zone }}"
+    record: "{{ item.record }}"
+    value: "{{ item.value }}"
+    type: "{{ item.type }}"
+  with_items: "{{ dns_records }}"
+
+- name: Make sure services is running
+  become: true
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items:
+    - nginx
+    - firewalld
+
+- name: Rule for firewall
+  become: true
+  firewalld:
+    service: http
+    permanent: true
+    immediate: true
+    state: enabled

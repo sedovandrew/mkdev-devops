@@ -1,0 +1,57 @@
+---
+- name: Install the necessary packages
+  become: true
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - bind
+    - firewalld
+
+- name: Configure BIND
+  become: true
+  template:
+    src: named.conf.j2
+    dest: /etc/named.conf
+    owner: root
+    group: named
+    mode: 0640
+  notify: restart dns
+
+- name: Configure zones
+  become: true
+  template:
+    src: "{{ item }}.j2"
+    dest: "/var/named/dynamic/{{ item }}"
+    owner: named
+    group: named
+    mode: 0640
+  notify: restart dns
+  with_items: 
+    - "{{ dns_zone }}.zone"
+    - "{{ dns_zone_reverse }}.in-addr.arpa"
+
+- name: Configure keys
+  become: true
+  template:
+    src: dnsclient.conf.j2
+    dest: /etc/named/dnsclient.conf
+    owner: root
+    group: named
+    mode: 0640
+  notify: restart dns
+
+- name: start firewalld
+  become: true
+  systemd:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Rule for firewall
+  become: true
+  firewalld:
+    service: dns
+    permanent: true
+    immediate: true
+    state: enabled
