@@ -25,9 +25,21 @@
     key_name: "{{ host_name }}"
     key_secret: "{{ dnsclient_public_key }}"
     server: "{{ groups['dnsmaster']|first }}"
-    zone: "{{ dns_zone }}"
-    record: "{{ host_name }}"
-    value: "{{ inventory_hostname }}"
+    zone: "{{ item.zone }}"
+    record: "{{ item.record }}"
+    value: "{{ item.value }}"
+    type: "{{ item.type }}"
+  with_items: "{{ dns_records }}"
+
+- name: Make sure services is running
+  become: true
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  with_items:
+    - nginx
+    - firewalld
 
 - name: Rule for firewall
   become: true
@@ -36,9 +48,3 @@
     permanent: true
     immediate: true
     state: enabled
-
-- name: Make sure a service is running
-  become: true
-  systemd:
-    name: nginx
-    state: started

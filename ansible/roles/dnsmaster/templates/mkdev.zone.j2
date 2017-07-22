@@ -7,6 +7,8 @@ $TTL 86400
 		86400
 )
 		IN	NS	{{ dns_server }}.{{ dns_zone }}.
-dnsmaster	IN	A	{{ inventory_hostname }}
-workspace	IN	A	192.168.90.105
-nexus		IN	A	192.168.90.104
+{{ dns_server }}	IN	A	{{ inventory_hostname }}
+
+{% for host in host_list %}
+{{ host.name }}	IN	A	{{ dns_zone_reverse.split('.') | reverse | join('.') }}.{{ host.host }}
+{% endfor %}

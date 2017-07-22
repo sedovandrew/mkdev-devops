@@ -4,3 +4,4 @@
   systemd:
     name: named
     state: restarted
+    enabled: true

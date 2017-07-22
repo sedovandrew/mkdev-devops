@@ -7,6 +7,8 @@ $TTL 86400
 		86400
 )
 		IN	NS	{{ dns_server }}.{{ dns_zone }}.
-53		IN	PTR	dnsmaster.mkdev.
-105		IN	PTR	workspace.mkdev.
-104		IN	PTR	nexus.mkdev.
+{{ inventory_hostname.split(".") | last }}	IN	PTR	{{ dns_server }}.{{ dns_zone }}.
+
+{% for host in host_list %}
+{{ host.host }}	IN	PTR	{{ host.name }}.{{ dns_zone }}.
+{% endfor %}

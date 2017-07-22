@@ -31,17 +31,17 @@ zone "." IN {
 	file "named.ca";
 };
 
-zone "mkdev" IN {
+zone "{{ dns_zone }}" IN {
 	type master;
-	file "dynamic/mkdev.zone";
+	file "dynamic/{{ dns_zone }}.zone";
 	allow-update {
 		key dnsclient;
 	};
 };
 
-zone "90.168.192.in-addr.arpa" IN {
+zone "{{ dns_zone_reverse }}.in-addr.arpa" IN {
 	type master;
-	file "dynamic/90.168.192.in-addr.arpa";
+	file "dynamic/{{ dns_zone_reverse }}.in-addr.arpa";
 	allow-update {
 		key dnsclient;
 	};

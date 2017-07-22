@@ -1,9 +1,12 @@
 ---
-- name: Installing BIND
+- name: Install the necessary packages
   become: true
   yum:
-    name: bind
+    name: "{{ item }}"
     state: present
+  with_items:
+    - bind
+    - firewalld
 
 - name: Configure BIND
   become: true
@@ -15,20 +18,18 @@
     mode: 0640
   notify: restart dns
 
-- name: Configure zone mkdev
+- name: Configure zones
   become: true
   template:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
+    src: "{{ item }}.j2"
+    dest: "/var/named/dynamic/{{ item }}"
     owner: named
     group: named
     mode: 0640
   notify: restart dns
-  with_items:
-    - src: mkdev.zone.j2
-      dest: /var/named/dynamic/mkdev.zone
-    - src: 90.168.192.in-addr.arpa.j2
-      dest: /var/named/dynamic/90.168.192.in-addr.arpa
+  with_items: 
+    - "{{ dns_zone }}.zone"
+    - "{{ dns_zone_reverse }}.in-addr.arpa"
 
 - name: Configure keys
   become: true
@@ -39,6 +40,13 @@
     group: named
     mode: 0640
   notify: restart dns
+
+- name: start firewalld
+  become: true
+  systemd:
+    name: firewalld
+    state: started
+    enabled: true
 
 - name: Rule for firewall
   become: true

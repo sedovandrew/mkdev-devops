@@ -101,12 +101,14 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "dnsmaster" do |dnsmaster|
+    dnsmaster.vm.box = "centos/7"
     dnsmaster.vm.hostname = "dnsmaster.mkdev"
     dnsmaster.vm.provider "libvirt"
     dnsmaster.vm.network "private_network", ip: "192.168.90.53"
   end
 
   config.vm.define "dnsclient" do |dnsclient|
+    dnsclient.vm.box = "centos/7"
     dnsclient.vm.hostname = "dnsclient.mkdev"
     dnsclient.vm.provider "libvirt"
     dnsclient.vm.network "private_network", ip: "192.168.90.54"
